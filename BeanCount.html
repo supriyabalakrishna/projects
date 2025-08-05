@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BeanCount ☕ Yield Estimator</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #4B2E2B, #FFF1DC);
+      color: #3E2723;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #6F4E37;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #8B5E3C;
+    }
+    .page {
+      display: none;
+      max-width: 700px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    }
+    .active {
+      display: block;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #4E342E;
+    }
+    .emoji {
+      font-size: 20px;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>☕ BeanCount Yield Estimator</h1>
+  <div class="tabs">
+    <button onclick="showPage('page1')">🌱 Coffee 101</button>
+    <button onclick="showPage('page2')">🔍 About Tool</button>
+    <button onclick="showPage('page3')">📊 Estimator</button>
+  </div>
+
+  <div id="page1" class="page active">
+    <h2>🌿 Coffee 101</h2>
+    <p>
+      Coffee is more than just a drink — it's an agricultural science! 
+      There are different types of plantations like <strong>Arabica</strong> and <strong>Robusta</strong>, each having unique flavor and yield characteristics. 
+      Factors like altitude, rainfall, soil, and the farmer’s care can influence the yield and quality of coffee beans ☕.
+    </p>
+    <p>
+      This tool helps you estimate your potential yield based on key plantation details. Happy brewing! 🍃
+    </p>
+  </div>
+
+  <div id="page2" class="page">
+    <h2>🔍 About This Tool</h2>
+    <p>
+      The <strong>BeanCount Yield Estimator</strong> uses a simple rule-based model to predict potential coffee yield based on the following factors:
+    </p>
+    <ul>
+      <li>🌾 <strong>Farm Size</strong></li>
+      <li>💧 <strong>Rainfall</strong></li>
+      <li>⛰️ <strong>Altitude</strong></li>
+      <li>🌱 <strong>Plantation Type</strong></li>
+      <li>🌿 <strong>Coffee Variety</strong></li>
+      <li>🪴 <strong>Plant Age & Health</strong></li>
+      <li>👩‍🌾 <strong>Farmer Care Practices</strong></li>
+    </ul>
+    <p>
+      This model provides a basic estimate and does not replace detailed agronomic analysis.
+    </p>
+  </div>
+
+  <div id="page3" class="page">
+    <h2>📊 Estimate Your Coffee Yield</h2>
+    <form id="yieldForm">
+      <div class="form-group">
+        <label>Farm Size (acres)</label>
+        <input type="number" id="farmSize" required>
+      </div>
+      <div class="form-group">
+        <label>Rainfall (mm/year)</label>
+        <input type="number" id="rainfall" required>
+      </div>
+      <div class="form-group">
+        <label>Altitude (meters)</label>
+        <input type="number" id="altitude" required>
+      </div>
+      <div class="form-group">
+        <label>Plantation Type</label>
+        <select id="plantationType">
+          <option>Arabica</option>
+          <option>Robusta</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Coffee Variety</label>
+        <select id="variety">
+          <option>High-Yielding</option>
+          <option>Traditional</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Plant Age (years)</label>
+        <input type="number" id="age" required>
+      </div>
+      <div class="form-group">
+        <label>Plant Health</label>
+        <select id="health">
+          <option>Healthy</option>
+          <option>Moderate</option>
+          <option>Poor</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Farmer's Care</label>
+        <select id="care">
+          <option>Excellent</option>
+          <option>Average</option>
+          <option>Poor</option>
+        </select>
+      </div>
+      <button type="button" onclick="estimateYield()">Estimate ☕</button>
+    </form>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function estimateYield() {
+      const size = parseFloat(document.getElementById('farmSize').value);
+      const rainfall = parseFloat(document.getElementById('rainfall').value);
+      const altitude = parseFloat(document.getElementById('altitude').value);
+      const type = document.getElementById('plantationType').value;
+      const variety = document.getElementById('variety').value;
+      const age = parseInt(document.getElementById('age').value);
+      const health = document.getElementById('health').value;
+      const care = document.getElementById('care').value;
+
+      let base = 400;
+      if (type === "Arabica") base += 100;
+      if (variety === "High-Yielding") base += 150;
+      if (rainfall >= 1200 && rainfall <= 2000) base += 80;
+      if (altitude >= 1000 && altitude <= 2000) base += 80;
+      if (health === "Healthy") base += 70;
+      else if (health === "Poor") base -= 70;
+      if (care === "Excellent") base += 70;
+      else if (care === "Poor") base -= 70;
+      if (age < 2 || age > 20) base -= 50;
+
+      const estimatedYield = Math.round(base * size);
+      document.getElementById("result").innerHTML = `☕ Estimated Yield: <strong>${estimatedYield} kg</strong>`;
+    }
+  </script>
+</body>
+<footer>
+    <p>Made with ❤️ by Coffee Enthusiasts</p>
+</footer>
+</html>
